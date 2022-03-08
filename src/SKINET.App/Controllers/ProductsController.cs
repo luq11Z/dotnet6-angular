@@ -1,14 +1,13 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using SKINET.App.Dtos;
+using SKINET.App.Errors;
 using SKINET.Business.Interfaces;
 using SKINET.Business.Models;
 
 namespace SKINET.App.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class ProductsController : ControllerBase
+    public class ProductsController : BaseController
     {
         private readonly IProductRepository _productRepository;
         private readonly IMapper _mapper;
@@ -29,8 +28,14 @@ namespace SKINET.App.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<ProductDTO>> GetProduct(int id)
         {
-            var product = await _productRepository.GetProductBrandType(id);  
-            return _mapper.Map<ProductDTO>(product);
+            var product = await _productRepository.GetProductBrandType(id);
+
+            if (product != null)
+            {
+                return _mapper.Map<ProductDTO>(product);
+            }
+
+            return NotFound(new ApiResponse(404));
         }
     }
 }

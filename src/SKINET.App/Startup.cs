@@ -1,45 +1,46 @@
 using Microsoft.EntityFrameworkCore;
-using Microsoft.OpenApi.Models;
 using SKINET.App.Configuration;
-using SKINET.Business.Interfaces;
+using SKINET.App.Exceptions;
 using SKINET.Data.Context;
-using SKINET.Data.Repositories;
 
 namespace API
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
-        {
-            Configuration = configuration;
-        }
-
         public IConfiguration Configuration { get; }
+
+        public Startup(IWebHostEnvironment hostEnvironment)
+        {
+            var builder = new ConfigurationBuilder()
+               .SetBasePath(hostEnvironment.ContentRootPath)
+               .AddJsonFile("appsettings.json", true, true)
+               .AddJsonFile($"appsettings.{hostEnvironment.EnvironmentName}.json", true, true)
+               .AddEnvironmentVariables();
+
+            if (hostEnvironment.IsProduction())
+            {
+                builder.AddUserSecrets<Startup>();
+            }
+
+            Configuration = builder.Build();
+        }
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<StoreContext>(x => x.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-
-            services.AddScoped<IProductRepository, ProductRepository>();
-            services.AddScoped<IProductRepository, ProductRepository>();
-
-            services.AddAutoMapper(typeof(AutoMapperConfig));
-
+            services.AddDbContext<StoreContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            
             services.AddControllers();
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebAPIv5", Version = "v1" });
-            });
+            services.ResolveDependecies();
+
+            services.AddSwaggerDocumentation();
+           
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "WebAPIv5 v1"));
-            }
+            app.UseMiddleware<ExceptionMiddleware>();
+            
+            app.UseStatusCodePagesWithReExecute("/errors/{0}");
 
             app.UseHttpsRedirection();
 
@@ -47,6 +48,8 @@ namespace API
             app.UseStaticFiles();
 
             app.UseAuthorization();
+
+            app.UseSwaggerDocumention();
 
             app.UseEndpoints(endpoints =>
             {
