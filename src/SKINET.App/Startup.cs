@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using SKINET.App.Configuration;
 using SKINET.Business.Interfaces;
 using SKINET.Data.Context;
 using SKINET.Data.Repositories;
@@ -22,6 +23,8 @@ namespace API
             services.AddScoped<IProductRepository, ProductRepository>();
             services.AddScoped<IProductRepository, ProductRepository>();
 
+            services.AddAutoMapper(typeof(AutoMapperConfig));
+
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
@@ -41,6 +44,7 @@ namespace API
             app.UseHttpsRedirection();
 
             app.UseRouting();
+            app.UseStaticFiles();
 
             app.UseAuthorization();
 

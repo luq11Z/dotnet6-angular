@@ -17,6 +17,11 @@ namespace SKINET.Data.Repositories
             return await dbContext.Products.AsNoTracking().Include(p => p.ProductBrand).FirstOrDefaultAsync(x => x.Id == id);
         }
 
+        public async Task<Product> GetProductBrandType(int id)
+        {
+            return await dbContext.Products.AsNoTracking().Include(p => p.ProductBrand).Include(p => p.ProductType).FirstOrDefaultAsync(x => x.Id == id);
+        }
+
         public async Task<IEnumerable<Product>> GetProductsByBrand(int brandId)
         {
             return await Find(p => p.ProductBrandId == brandId);

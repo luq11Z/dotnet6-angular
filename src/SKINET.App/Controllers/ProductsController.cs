@@ -1,5 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
+using SKINET.App.Dtos;
 using SKINET.Business.Interfaces;
+using SKINET.Business.Models;
 
 namespace SKINET.App.Controllers
 {
@@ -8,23 +11,26 @@ namespace SKINET.App.Controllers
     public class ProductsController : ControllerBase
     {
         private readonly IProductRepository _productRepository;
+        private readonly IMapper _mapper;
 
-        public ProductsController(IProductRepository productRepository)
+        public ProductsController(IProductRepository productRepository, IMapper mapper)
         {
             _productRepository = productRepository;
+            _mapper = mapper;   
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetProducts()
+        public async Task<ActionResult<List<ProductDTO>>> GetProducts()
         {
             var products = await _productRepository.GetProductsBrandsTypes();
-            return Ok(products);
+            return _mapper.Map<List<ProductDTO>>(products);
         }
 
         [HttpGet("{id}")]
-        public string GetProduct(int id)
+        public async Task<ActionResult<ProductDTO>> GetProduct(int id)
         {
-            return "single product";
+            var product = await _productRepository.GetProductBrandType(id);  
+            return _mapper.Map<ProductDTO>(product);
         }
     }
 }

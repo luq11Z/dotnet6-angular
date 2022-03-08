@@ -11,10 +11,12 @@ namespace SKINET.Business.Interfaces
     {
         Task<Product> GetProductBrand(int id);
         Task<IEnumerable<Product>> GetProductsByBrand(int brandId);
-        Task<IEnumerable<Product>> GetProductsBrands();
         Task<Product> GetProductType(int id);
         Task<IEnumerable<Product>> GetProductsByType(int typeId);
+        Task<Product> GetProductBrandType(int id);
+        Task<IEnumerable<Product>> GetProductsBrands();
         Task<IEnumerable<Product>> GetProductsTypes();
         Task<IEnumerable<Product>> GetProductsBrandsTypes();
+
     }
 }
