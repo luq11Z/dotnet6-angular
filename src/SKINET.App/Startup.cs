@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using SKINET.Business.Interfaces;
 using SKINET.Data.Context;
+using SKINET.Data.Repositories;
 
 namespace API
 {
@@ -16,6 +18,10 @@ namespace API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<StoreContext>(x => x.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
+            services.AddScoped<IProductRepository, ProductRepository>();
+            services.AddScoped<IProductRepository, ProductRepository>();
+
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using SKINET.Business.Interfaces;
 
 namespace SKINET.App.Controllers
 {
@@ -6,10 +7,18 @@ namespace SKINET.App.Controllers
     [Route("api/[controller]")]
     public class ProductsController : ControllerBase
     {
-        [HttpGet]
-        public string GetProducts()
+        private readonly IProductRepository _productRepository;
+
+        public ProductsController(IProductRepository productRepository)
         {
-            return "this will be a list of products";
+            _productRepository = productRepository;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetProducts()
+        {
+            var products = await _productRepository.GetProductsBrandsTypes();
+            return Ok(products);
         }
 
         [HttpGet("{id}")]
