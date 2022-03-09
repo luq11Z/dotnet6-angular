@@ -20,6 +20,9 @@ namespace SKINET.Business.Interfaces
 
         /* Find by linq/lambda expression*/
         Task<IEnumerable<TEntity>> Find(Expression<Func<TEntity, bool>> predicate);
+        Task<TEntity> GetWithSpec(ISpecification<TEntity> specification);
+        Task<List<TEntity>> GetAllWithSpec(ISpecification<TEntity> specification);
+        Task<int> Count(ISpecification<TEntity> specification);
 
         Task<int> SaveChanges();
     }

@@ -35,6 +35,16 @@ namespace SKINET.App.Configuration
                 };
             });
 
+            services.AddCors(option =>
+            {
+                option.AddPolicy("CorsPolicy", policy =>
+                {
+                    policy.AllowAnyHeader()
+                    .AllowAnyOrigin()
+                    .WithOrigins("https://localhost:4200");
+                });
+            });
+
             return services;
         }
     }

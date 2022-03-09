@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SKINET.Business.Models;
-using System.Reflection;
 
 namespace SKINET.Data.Context
 {

@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace SKINET.App.Dtos
+﻿namespace SKINET.App.Dtos
 {
     public class ProductDTO
     {

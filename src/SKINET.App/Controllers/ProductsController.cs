@@ -2,8 +2,9 @@
 using Microsoft.AspNetCore.Mvc;
 using SKINET.App.Dtos;
 using SKINET.App.Errors;
+using SKINET.App.Extensions;
 using SKINET.Business.Interfaces;
-using SKINET.Business.Models;
+using SKINET.Data.Specifications;
 
 namespace SKINET.App.Controllers
 {
@@ -19,16 +20,24 @@ namespace SKINET.App.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<ProductDTO>>> GetProducts()
+        public async Task<ActionResult<Pagination<ProductDTO>>> GetProducts([FromQuery] ProductParamsSpecification productParams)
         {
-            var products = await _productRepository.GetProductsBrandsTypes();
-            return _mapper.Map<List<ProductDTO>>(products);
+            var specifications = new ProductsWithBrandsAndTypesSpecification(productParams);
+            var countSpecifications = new ProductWithFiltersForCountSpecification(productParams);
+            var totalItems = await _productRepository.Count(countSpecifications);
+
+            var products = await _productRepository.GetAllWithSpec(specifications);
+            var data = _mapper.Map<List<ProductDTO>>(products);
+
+            return Ok(new Pagination<ProductDTO>(productParams.PageIndex, productParams.PageSize, totalItems, data));
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<ProductDTO>> GetProduct(int id)
         {
-            var product = await _productRepository.GetProductBrandType(id);
+            var specifications = new ProductsWithBrandsAndTypesSpecification(id);
+
+            var product = await _productRepository.GetWithSpec(specifications);
 
             if (product != null)
             {

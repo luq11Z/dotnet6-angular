@@ -12,44 +12,70 @@ namespace SKINET.Data.Repositories
         {  
         }
 
-        public async Task<Product> GetProductBrand(int id)
+        /* Aggregates and search criterias without the generics specifications. */
+        public async Task<Product> GetProductWithBrand(int id)
         {
             return await dbContext.Products.AsNoTracking().Include(p => p.ProductBrand).FirstOrDefaultAsync(x => x.Id == id);
         }
 
-        public async Task<Product> GetProductBrandType(int id)
+        /* Aggregates and search criterias without the generics specifications. */
+        public async Task<Product> GetProductWithBrandAndType(int id)
         {
             return await dbContext.Products.AsNoTracking().Include(p => p.ProductBrand).Include(p => p.ProductType).FirstOrDefaultAsync(x => x.Id == id);
         }
 
+        /* Aggregates and search criterias without the generics specifications. */
         public async Task<IEnumerable<Product>> GetProductsByBrand(int brandId)
         {
             return await Find(p => p.ProductBrandId == brandId);
         }
 
-        public async Task<IEnumerable<Product>> GetProductsBrands()
+        /* Aggregates and search criterias without the generics specifications. */
+        public async Task<IEnumerable<Product>> GetProductsWithBrands()
         {
             return await dbContext.Products.AsNoTracking().Include(p => p.ProductBrand).OrderBy(x => x.Name).ToListAsync();
         }
 
-        public async Task<Product> GetProductType(int id)
+        /* Aggregates and search criterias without the generics specifications. */
+        public async Task<Product> GetProductWithType(int id)
         {
             return await dbContext.Products.AsNoTracking().Include(p => p.ProductType).FirstOrDefaultAsync(x => x.Id == id);
         }
 
+        /* Aggregates and search criterias without the generics specifications. */
         public async Task<IEnumerable<Product>> GetProductsByType(int typeId)
         {
             return await Find(p => p.ProductTypeId == typeId);
         }
 
-        public async Task<IEnumerable<Product>> GetProductsTypes()
+        /* Aggregates and search criterias without the generics specifications. */
+        public async Task<IEnumerable<Product>> GetProductsWithTypes()
         {
             return await dbContext.Products.AsNoTracking().Include(p => p.ProductType).OrderBy(x => x.Name).ToListAsync();
         }
 
-        public async Task<IEnumerable<Product>> GetProductsBrandsTypes()
+        /* Aggregates and search criterias without the generics specifications. */
+        public async Task<IEnumerable<Product>> GetProductsWithBrandsAndTypes(string sort)
         {
-            return await dbContext.Products.AsNoTracking().Include(p => p.ProductType).Include(p => p.ProductBrand).OrderBy(x => x.Name).ToListAsync();
+            var products = dbContext.Products.AsNoTracking().Include(p => p.ProductType).Include(p => p.ProductBrand).OrderBy(x => x.Name);
+
+            if (!string.IsNullOrEmpty(sort))
+            {
+                switch (sort)
+                {
+                    case "priceAsc":
+                        products = products.OrderBy(x => x.Price);
+                        break;
+                    case "priceDesc":
+                        products = products.OrderByDescending(x => x.Price);
+                        break;
+                    default:   
+                        products = products.OrderBy(x => x.Name);
+                        break;
+                }
+            }
+
+            return await products.ToListAsync();
         }
     }
 }

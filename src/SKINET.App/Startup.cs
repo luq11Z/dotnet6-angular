@@ -31,9 +31,7 @@ namespace API
             
             services.AddControllers();
             services.ResolveDependecies();
-
             services.AddSwaggerDocumentation();
-           
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -46,6 +44,8 @@ namespace API
 
             app.UseRouting();
             app.UseStaticFiles();
+
+            app.UseCors("CorsPolicy");
 
             app.UseAuthorization();
 
