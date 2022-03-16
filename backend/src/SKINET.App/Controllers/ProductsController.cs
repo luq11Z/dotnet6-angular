@@ -4,6 +4,7 @@ using SKINET.App.Dtos;
 using SKINET.App.Errors;
 using SKINET.App.Extensions;
 using SKINET.Business.Interfaces;
+using SKINET.Business.Models;
 using SKINET.Data.Specifications;
 
 namespace SKINET.App.Controllers
@@ -11,12 +12,17 @@ namespace SKINET.App.Controllers
     public class ProductsController : BaseController
     {
         private readonly IProductRepository _productRepository;
+        private readonly IProductBrandRepository _productBrandRepository;
+        private readonly IProductTypeRepository _productTypeRepository;
         private readonly IMapper _mapper;
 
-        public ProductsController(IProductRepository productRepository, IMapper mapper)
+        public ProductsController(IProductRepository productRepository, IMapper mapper, IProductBrandRepository productBrandRepository,
+            IProductTypeRepository productTypeRepository)
         {
             _productRepository = productRepository;
-            _mapper = mapper;   
+            _productBrandRepository = productBrandRepository;
+            _productTypeRepository = productTypeRepository;
+            _mapper = mapper;
         }
 
         [HttpGet]
@@ -46,5 +52,18 @@ namespace SKINET.App.Controllers
 
             return NotFound(new ApiResponse(404));
         }
+
+        [HttpGet("brands")]
+        public async Task<ActionResult<ProductBrand>> GetProductBrands()
+        {
+            return Ok(await _productBrandRepository.GetAll());
+        }
+
+        [HttpGet("types")]
+        public async Task<ActionResult<ProductType>> GetProductTypes()
+        {
+            return Ok(await _productTypeRepository.GetAll());
+        }
+
     }
 }

@@ -13,7 +13,8 @@ namespace SKINET.App.Configuration
             services.AddScoped<StoreContext>();
 
             services.AddScoped<IProductRepository, ProductRepository>();
-            services.AddScoped<IProductRepository, ProductRepository>();
+            services.AddScoped<IProductBrandRepository, ProductBrandRepository>();
+            services.AddScoped<IProductTypeRepository, ProductTypeRepository>();
 
             services.AddAutoMapper(typeof(AutoMapperConfig));
 
