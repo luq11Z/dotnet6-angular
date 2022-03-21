@@ -15,6 +15,7 @@ namespace SKINET.App.Configuration
             services.AddScoped<IProductRepository, ProductRepository>();
             services.AddScoped<IProductBrandRepository, ProductBrandRepository>();
             services.AddScoped<IProductTypeRepository, ProductTypeRepository>();
+            services.AddScoped<IShoppingCartRepository, ShoppingCartRepository>();
 
             services.AddAutoMapper(typeof(AutoMapperConfig));
 

@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using SKINET.App.Configuration;
 using SKINET.App.Exceptions;
 using SKINET.Data.Context;
+using StackExchange.Redis;
 
 namespace API
 {
@@ -28,6 +29,12 @@ namespace API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<StoreContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddSingleton<IConnectionMultiplexer>(config =>
+            {
+                var configuration = ConfigurationOptions.Parse(Configuration.GetConnectionString("Redis"), true);
+
+                return ConnectionMultiplexer.Connect(configuration);
+            });
             
             services.AddControllers();
             services.ResolveDependecies();
