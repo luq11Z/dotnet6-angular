@@ -29,6 +29,7 @@ namespace API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<StoreContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddDbContext<AppIdentityContext>(options => options.UseSqlServer(Configuration.GetConnectionString("Identityconnection")));
             services.AddSingleton<IConnectionMultiplexer>(config =>
             {
                 var configuration = ConfigurationOptions.Parse(Configuration.GetConnectionString("Redis"), true);
@@ -37,6 +38,7 @@ namespace API
             });
             
             services.AddControllers();
+            services.AddIdentityConfig(Configuration);
             services.ResolveDependecies();
             services.AddSwaggerDocumentation();
         }
@@ -53,7 +55,7 @@ namespace API
             app.UseStaticFiles();
 
             app.UseCors("CorsPolicy");
-
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseSwaggerDocumention();

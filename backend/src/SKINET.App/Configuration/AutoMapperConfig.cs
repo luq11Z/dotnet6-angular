@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using SKINET.App.Dtos;
 using SKINET.Business.Models;
+using SKINET.Business.Models.Identity;
 
 namespace SKINET.App.Configuration
 {
@@ -13,6 +14,8 @@ namespace SKINET.App.Configuration
                 .ForMember(d => d.ProductType, o => o.MapFrom(d => d.ProductType.Name))
                 .ForMember(d => d.CreatedAt, o => o.MapFrom(d => d.CreatedAt.ToLocalTime()))
                 .ForMember(d => d.PictureUrl, o => o.MapFrom<ProductUrlResolver>());
+
+            CreateMap<Address, AddressDto>().ReverseMap();
         }
     }
 }
