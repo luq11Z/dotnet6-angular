@@ -72,6 +72,14 @@ namespace SKINET.App.Controllers
         [HttpPost("register")]
         public async Task<ActionResult<UserDto>> Register(RegisterDto registerDto)
         {
+            if (CheckEmailExists(registerDto.Email).Result.Value)
+            {
+                return new BadRequestObjectResult(new ApiValidationErrorResponse
+                {
+                    Errors = new[] { "Email address is already in use" }
+                });
+            }
+
             var user = new AppUser
             {
                 Email = registerDto.Email,

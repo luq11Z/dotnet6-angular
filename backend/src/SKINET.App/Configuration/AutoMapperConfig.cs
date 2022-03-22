@@ -16,6 +16,8 @@ namespace SKINET.App.Configuration
                 .ForMember(d => d.PictureUrl, o => o.MapFrom<ProductUrlResolver>());
 
             CreateMap<Address, AddressDto>().ReverseMap();
+            CreateMap<ShoppingCart, ShoppingCartDto>().ReverseMap();
+            CreateMap<ShoppingCartItem, ShoppingCartItemDto>().ReverseMap();
         }
     }
 }

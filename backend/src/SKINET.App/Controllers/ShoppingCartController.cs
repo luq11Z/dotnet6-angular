@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
+using SKINET.App.Dtos;
 using SKINET.Business.Interfaces;
 using SKINET.Business.Models;
 
@@ -7,10 +9,12 @@ namespace SKINET.App.Controllers
     public class ShoppingCartController : BaseController
     {
         private readonly IShoppingCartRepository _shoppingCartRepository;
+        private readonly IMapper _mapper;
 
-        public ShoppingCartController(IShoppingCartRepository shoppingCartRepository)
+        public ShoppingCartController(IShoppingCartRepository shoppingCartRepository, IMapper mapper)
         {
             _shoppingCartRepository = shoppingCartRepository;
+            _mapper = mapper;
         }
 
         [HttpGet]
@@ -22,9 +26,11 @@ namespace SKINET.App.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<ShoppingCart>> CreateOrUpdateShoppingCart(ShoppingCart shoppingCart)
+        public async Task<ActionResult<ShoppingCart>> CreateOrUpdateShoppingCart(ShoppingCartDto shoppingCart)
         {
-            var updatedShoppingCart = await _shoppingCartRepository.CreateOrUpdateShoppingCart(shoppingCart);
+            var cart = _mapper.Map<ShoppingCartDto, ShoppingCart>(shoppingCart);
+
+            var updatedShoppingCart = await _shoppingCartRepository.CreateOrUpdateShoppingCart(cart);
 
             return Ok(updatedShoppingCart);
         }

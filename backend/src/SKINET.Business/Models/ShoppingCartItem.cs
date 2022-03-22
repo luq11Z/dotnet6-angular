@@ -10,9 +10,5 @@
         public string PictureUrl { get; set; }
         public string Brand { get; set; }
         public string Type { get; set; }
-
-        public ShoppingCartItem()
-        {
-        }
     }
 }
