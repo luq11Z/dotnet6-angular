@@ -31,7 +31,7 @@ namespace SKINET.App.Controllers
         {
             var user = await _userManager.FindByEmailFromClaimsPrinciple(User);
 
-            return new UserDto { Email = user.Email, DisplayName = user.UserName, Token = _tokenService.CreateToken(user) };
+            return new UserDto { Email = user.Email, DisplayName = user.DisplayName, Token = _tokenService.CreateToken(user) };
         }
 
         [HttpGet("emailexists")]
@@ -66,7 +66,7 @@ namespace SKINET.App.Controllers
                 return Unauthorized(new ApiResponse(401));
             }
 
-            return new UserDto { Email = user.Email, DisplayName = user.UserName, Token = _tokenService.CreateToken(user) };
+            return new UserDto { Email = user.Email, DisplayName = user.DisplayName, Token = _tokenService.CreateToken(user) };
         }
 
         [HttpPost("register")]

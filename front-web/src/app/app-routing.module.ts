@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { AuthGuard } from './core/guards/auth.guard';
 import { NotFoundComponent } from './core/not-found/not-found.component';
 import { ServerErrorComponent } from './core/server-error/server-error.component';
 import { TestErrorComponent } from './core/test-error/test-error.component';
@@ -12,7 +13,8 @@ const routes: Routes = [
   { path: 'not-found', component: NotFoundComponent, data: {breadcrumb: 'Not Found'} },
   { path: 'shop', loadChildren: () => import('./shop/shop.module').then(mod => mod.ShopModule), data: {breadcrumb: 'Shop'} },
   { path: 'shopping-cart', loadChildren: () => import('./shopping-cart/shopping-cart.module').then(mod => mod.ShoppingCartModule), data: {breadcrumb: 'Cart'} },
-  { path: 'checkout', loadChildren: () => import('./chekout/chekout.module').then(mod => mod.ChekoutModule), data: {breadcrumb: 'Checkout'} },
+  { path: 'checkout', canActivate: [AuthGuard] ,loadChildren: () => import('./chekout/chekout.module').then(mod => mod.ChekoutModule), data: {breadcrumb: 'Checkout'} },
+  { path: 'account', loadChildren: () => import('./account/account.module').then(mod => mod.AccountModule), data: {breadcrumb: {skip: true} } },
   { path: '**', redirectTo: 'not-found' , pathMatch: 'full'},
 ];
 
