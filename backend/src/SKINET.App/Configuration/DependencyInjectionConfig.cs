@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SKINET.App.Errors;
 using SKINET.Business.Interfaces;
+using SKINET.Business.Interfaces.Repositories;
 using SKINET.Business.Services;
 using SKINET.Data.Context;
 using SKINET.Data.Repositories;
@@ -13,12 +14,15 @@ namespace SKINET.App.Configuration
         {
             services.AddScoped<StoreContext>();
 
+            services.AddScoped(typeof(IRepository<>), (typeof(Repository<>)));
             services.AddScoped<IProductRepository, ProductRepository>();
-            services.AddScoped<IProductBrandRepository, ProductBrandRepository>();
-            services.AddScoped<IProductTypeRepository, ProductTypeRepository>();
             services.AddScoped<IShoppingCartRepository, ShoppingCartRepository>();
+            services.AddScoped<IOrderRepository, OrderRepository>();
+            services.AddScoped<IDeliveryMethodRepository, DeliveryMethodRepository>();
 
+            services.AddScoped<IUnitOfWork, UnitOfWork>();   
             services.AddScoped<ITokenService, TokenService>();
+            services.AddScoped<IOrderService, OrderService>();
 
             services.AddAutoMapper(typeof(AutoMapperConfig));
 

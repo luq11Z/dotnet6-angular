@@ -11,13 +11,13 @@ namespace SKINET.App.Controllers
 {
     public class ProductsController : BaseController
     {
-        private readonly IProductRepository _productRepository;
-        private readonly IProductBrandRepository _productBrandRepository;
-        private readonly IProductTypeRepository _productTypeRepository;
+        private readonly IRepository<Product> _productRepository;
+        private readonly IRepository<ProductBrand> _productBrandRepository;
+        private readonly IRepository<ProductType> _productTypeRepository;
         private readonly IMapper _mapper;
 
-        public ProductsController(IProductRepository productRepository, IMapper mapper, IProductBrandRepository productBrandRepository,
-            IProductTypeRepository productTypeRepository)
+        public ProductsController(IRepository<Product> productRepository, IMapper mapper, IRepository<ProductBrand> productBrandRepository,
+            IRepository<ProductType> productTypeRepository)
         {
             _productRepository = productRepository;
             _productBrandRepository = productBrandRepository;

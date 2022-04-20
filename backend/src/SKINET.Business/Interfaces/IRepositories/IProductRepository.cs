@@ -2,7 +2,7 @@
 
 namespace SKINET.Business.Interfaces
 {
-    public interface IProductRepository : IRepository<Product>
+    public interface IProductRepository
     {
         Task<Product> GetProductWithBrand(int id);
         Task<IEnumerable<Product>> GetProductsByBrand(int brandId);

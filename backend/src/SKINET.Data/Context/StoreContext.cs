@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SKINET.Business.Models;
+using SKINET.Business.Models.OrderAggregate;
 
 namespace SKINET.Data.Context
 {
@@ -7,13 +8,16 @@ namespace SKINET.Data.Context
     {
         public StoreContext(DbContextOptions<StoreContext> options) : base(options)
         {
-            ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
-            ChangeTracker.AutoDetectChangesEnabled = false;
+            //ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
+            //ChangeTracker.AutoDetectChangesEnabled = false;
         }
 
         public DbSet<Product> Products { get; set; }
         public DbSet<ProductBrand> ProductBrands { get; set; }
         public DbSet<ProductType> ProductTypes { get; set; }
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderItem> OrderItems { get; set; }
+        public DbSet<DeliveryMethod> DeliveryMethods { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

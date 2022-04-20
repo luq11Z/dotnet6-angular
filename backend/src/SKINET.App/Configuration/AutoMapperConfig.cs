@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using SKINET.App.Dtos;
 using SKINET.Business.Models;
-using SKINET.Business.Models.Identity;
+using SKINET.Business.Models.OrderAggregate;
 
 namespace SKINET.App.Configuration
 {
@@ -15,9 +15,19 @@ namespace SKINET.App.Configuration
                 .ForMember(d => d.CreatedAt, o => o.MapFrom(d => d.CreatedAt.ToLocalTime()))
                 .ForMember(d => d.PictureUrl, o => o.MapFrom<ProductUrlResolver>());
 
-            CreateMap<Address, AddressDto>().ReverseMap();
+            CreateMap<Business.Models.Identity.Address, AddressDto>().ReverseMap();
+            CreateMap<AddressDto, Business.Models.OrderAggregate.Address>();
             CreateMap<ShoppingCart, ShoppingCartDto>().ReverseMap();
             CreateMap<ShoppingCartItem, ShoppingCartItemDto>().ReverseMap();
+            CreateMap<Order, OrderToReturnDto>()
+                .ForMember(d => d.DeliveryMethod, o => o.MapFrom(s => s.DeliveryMethod.ShortName))
+                .ForMember(d => d.ShippingPrice, o => o.MapFrom(s => s.DeliveryMethod.Price));
+
+            CreateMap<OrderItem, OrderItemDto>()
+                .ForMember(d => d.ProductId, o => o.MapFrom(s => s.ItemOrdered.ProductItemId))
+                .ForMember(d => d.ProductName, o => o.MapFrom(s => s.ItemOrdered.ProductName))
+                .ForMember(d => d.PictureUrl, o => o.MapFrom(s => s.ItemOrdered.PictureUrl))
+                .ForMember(d => d.PictureUrl, o => o.MapFrom<OrderItemUrlResolver>());
         }
     }
 }

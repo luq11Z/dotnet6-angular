@@ -7,7 +7,7 @@ using System.Linq.Expressions;
 
 namespace SKINET.Data.Repositories
 {
-    public abstract class Repository<TEntity> : IRepository<TEntity> where TEntity : Entity, new()
+    public class Repository<TEntity> : IRepository<TEntity> where TEntity : Entity
     {
         /* Only inherited classes or repositories will be able to use. */
         protected readonly StoreContext dbContext;
@@ -47,22 +47,20 @@ namespace SKINET.Data.Repositories
             return await dbSet.AsNoTracking().Where(predicate).ToListAsync();
         }
 
-        public async Task Add(TEntity entity)
+        public virtual void Add(TEntity entity)
         {
-            dbSet.Add(entity);
-            await SaveChanges();
+            dbContext.Set<TEntity>().Add(entity);
         }
 
-        public virtual async Task Update(TEntity entity)
+        public virtual void Update(TEntity entity)
         {
-            dbSet.Update(entity);
-            await SaveChanges();
+            dbContext.Set<TEntity>().Attach(entity);
+            dbContext.Entry(entity).State = EntityState.Modified;
         }
 
-        public virtual async Task Delete(int id)
+        public virtual void Delete(TEntity entity)
         {
-            dbSet.Remove(new TEntity { Id = id });
-            await SaveChanges();
+            dbContext.Set<TEntity>().Remove(entity);
         }
 
         public async Task<int> SaveChanges()

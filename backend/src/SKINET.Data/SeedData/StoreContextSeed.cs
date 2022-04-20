@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using SKINET.Business.Models;
+using SKINET.Business.Models.OrderAggregate;
 using SKINET.Data.Context;
 using System.Text.Json;
 
@@ -48,6 +49,20 @@ namespace SKINET.Data.SeedData
                     foreach (var item in products)
                     {
                         context.Products.Add(item);
+                    }
+
+                    await context.SaveChangesAsync();
+                }
+
+                if (!context.DeliveryMethods.Any())
+                {
+                    var dmData = File.ReadAllText("../SKINET.DATA/SeedData/delivery.json");
+
+                    var deliveryMethods = JsonSerializer.Deserialize<List<DeliveryMethod>>(dmData);
+
+                    foreach (var item in deliveryMethods)
+                    {
+                        context.DeliveryMethods.Add(item);
                     }
 
                     await context.SaveChangesAsync();

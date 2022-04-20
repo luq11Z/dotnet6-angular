@@ -20,5 +20,10 @@ namespace SKINET.App.Extensions
 
             return await input.Users.SingleOrDefaultAsync(x => x.Email == email);
         }
+
+        public static string RetrieveEmailFromPrincipal(this ClaimsPrincipal user)
+        {
+            return user.FindFirstValue(ClaimTypes.Email);
+        }
     }
 }

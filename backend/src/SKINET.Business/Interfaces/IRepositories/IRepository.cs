@@ -1,29 +1,25 @@
 ﻿using SKINET.Business.Models;
-using System.Linq.Expressions;
 
 namespace SKINET.Business.Interfaces
 {
 
     /* Provides all necessary methods to any entity.
-       Obligates the repository do dispose (to free up memory).
        TEntity can only be applied to Entity childs. This way it is not possible passing any type of objects.
        In other words, only objects that implements Entity can use this interface.
     */
-    public interface IRepository<TEntity> : IDisposable where TEntity : Entity
+    public interface IRepository<TEntity> where TEntity : Entity
     {
         /* Tasks makes better usability, performace and helth to the system. */
-        Task Add(TEntity entity);
+        void Add(TEntity entity);
         Task<TEntity> GetById(int id);
         Task<List<TEntity>> GetAll();
-        Task Update(TEntity entity);
-        Task Delete(int id);
+        void Update(TEntity entity);
+        void Delete(TEntity entity);
 
         /* Find by linq/lambda expression*/
-        Task<IEnumerable<TEntity>> Find(Expression<Func<TEntity, bool>> predicate);
         Task<TEntity> GetWithSpec(ISpecification<TEntity> specification);
         Task<List<TEntity>> GetAllWithSpec(ISpecification<TEntity> specification);
         Task<int> Count(ISpecification<TEntity> specification);
-
         Task<int> SaveChanges();
     }
 }

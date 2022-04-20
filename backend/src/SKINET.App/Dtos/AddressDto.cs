@@ -21,7 +21,7 @@ namespace SKINET.App.Dtos
         public string City { get; set; }
 
         [Required]
-        [StringLength(100, ErrorMessage = "{0} must have between {2} and {1} characters", MinimumLength = 3)]
+        [StringLength(100, ErrorMessage = "{0} must have between {2} and {1} characters", MinimumLength = 2)]
         public string State { get; set; }
 
         [Required]
