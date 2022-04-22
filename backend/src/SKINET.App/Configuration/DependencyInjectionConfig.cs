@@ -50,6 +50,7 @@ namespace SKINET.App.Configuration
                 {
                     policy.AllowAnyHeader()
                     .AllowAnyOrigin()
+                    .AllowAnyMethod()
                     .WithOrigins("https://localhost:4200");
                 });
             });

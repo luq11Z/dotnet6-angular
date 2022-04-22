@@ -31,7 +31,7 @@ export class TextInputComponent implements OnInit, ControlValueAccessor {
   onTouched() { }
 
   writeValue(obj: any): void {
-    this.input.nativeElement = obj || '';
+    this.input.nativeElement.value = obj || '';
   }
   
   registerOnChange(fn: any): void {
