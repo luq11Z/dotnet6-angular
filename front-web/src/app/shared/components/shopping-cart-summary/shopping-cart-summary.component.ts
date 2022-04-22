@@ -1,7 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { Observable } from 'rxjs';
-import { ShoppingCartService } from 'src/app/shopping-cart/shopping-cart.service';
-import { IShoppingCart, IShoppingCartItem } from '../../models/shopping-cart';
+import { IOrderItem } from '../../models/order';
+import { IShoppingCartItem } from '../../models/shopping-cart';
 
 @Component({
   selector: 'app-shopping-cart-summary',
@@ -14,13 +13,12 @@ export class ShoppingCartSummaryComponent implements OnInit {
   @Output() increment: EventEmitter<IShoppingCartItem> = new EventEmitter<IShoppingCartItem>();
   @Output() remove: EventEmitter<IShoppingCartItem> = new EventEmitter<IShoppingCartItem>();
   @Input() isShoppingCart = true;
+  @Input() items: IShoppingCartItem[] | IOrderItem [] = [];
+  @Input() isOrder = false;
 
-  shoppingCart$: Observable<IShoppingCart>;
-
-  constructor(private shoppingCartService: ShoppingCartService) { }
+  constructor() { }
 
   ngOnInit(): void {
-    this.shoppingCart$ = this.shoppingCartService.shoppingCart$;
   }
 
   decrementItemQuantity(item: IShoppingCartItem) {

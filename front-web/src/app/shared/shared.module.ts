@@ -4,7 +4,7 @@ import { PaginationModule } from 'ngx-bootstrap/pagination';
 import { PagingHeaderComponent } from './components/paging-header/paging-header.component';
 import { PagerComponent } from './components/pager/pager.component';
 import { CarouselModule } from 'ngx-bootstrap/carousel';
-import { OrderDetailsComponent } from './components/order-details/order-details.component'
+import { OrderTotalsComponent } from './components/order-totals/order-totals.component'
 import { ReactiveFormsModule } from '@angular/forms';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { TextInputComponent } from './components/text-input/text-input.component';
@@ -18,7 +18,7 @@ import { RouterModule } from '@angular/router';
   declarations: [
     PagingHeaderComponent,
     PagerComponent,
-    OrderDetailsComponent,
+    OrderTotalsComponent,
     TextInputComponent,
     StepperComponent,
     ShoppingCartSummaryComponent
@@ -40,7 +40,7 @@ import { RouterModule } from '@angular/router';
     CdkStepperModule,
     PagingHeaderComponent,
     PagerComponent,
-    OrderDetailsComponent,
+    OrderTotalsComponent,
     TextInputComponent,
     StepperComponent,
     ShoppingCartSummaryComponent
