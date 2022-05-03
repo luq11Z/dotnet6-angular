@@ -32,11 +32,11 @@ namespace SKINET.Data.Context
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(StoreContext).Assembly);
 
             /* Search for relationships within modelBuilder getting the entity types and identify the relations 
-             * and update the delete behavior in order to prevent removing its children (cascade delete) */
+             * and update the delete behavior in order to prevent removing its children (cascade delete) 
             foreach (var relationship in modelBuilder.Model.GetEntityTypes().SelectMany(e => e.GetForeignKeys()))
             {
                 relationship.DeleteBehavior = DeleteBehavior.ClientSetNull;
-            }
+            } */
 
             base.OnModelCreating(modelBuilder);
         }

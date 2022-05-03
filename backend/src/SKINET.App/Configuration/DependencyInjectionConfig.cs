@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SKINET.App.Errors;
 using SKINET.Business.Interfaces;
+using SKINET.Business.Interfaces.IServices;
 using SKINET.Business.Interfaces.Repositories;
 using SKINET.Business.Services;
 using SKINET.Data.Context;
@@ -23,6 +24,7 @@ namespace SKINET.App.Configuration
             services.AddScoped<IUnitOfWork, UnitOfWork>();   
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IOrderService, OrderService>();
+            services.AddScoped<IPaymentService, PaymentService>();
 
             services.AddAutoMapper(typeof(AutoMapperConfig));
 

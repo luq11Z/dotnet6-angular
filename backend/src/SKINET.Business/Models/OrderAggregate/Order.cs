@@ -17,13 +17,14 @@
         }
 
         public Order(List<OrderItem> orderItems, string buyerEmail, Address shipToAddress, DeliveryMethod deliveryMethod, 
-                     decimal subTotal)
+                     decimal subTotal, string paymentIntentId)
         {
             OrderItems = orderItems;
             BuyerEmail = buyerEmail;
             ShipToAddress = shipToAddress;
             DeliveryMethod = deliveryMethod;
             SubTotal = subTotal;
+            PaymentIntentId = paymentIntentId;
         }
 
         public decimal GetTotal() {

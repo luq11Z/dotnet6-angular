@@ -2,7 +2,7 @@
 
 namespace SKINET.Data.Specifications
 {
-    public class OrdersWithItemsAndOrderingSpecification : BaseSpeficiation<Order>
+    public class OrdersWithItemsAndOrderingSpecification : BaseSpecification<Order>
     {
         public OrdersWithItemsAndOrderingSpecification(string email) : base(o => o.BuyerEmail == email)
         {

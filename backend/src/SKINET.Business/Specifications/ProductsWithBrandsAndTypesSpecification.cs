@@ -2,7 +2,7 @@
 
 namespace SKINET.Data.Specifications
 {
-    public class ProductsWithBrandsAndTypesSpecification : BaseSpeficiation<Product>
+    public class ProductsWithBrandsAndTypesSpecification : BaseSpecification<Product>
     {
         public ProductsWithBrandsAndTypesSpecification(ProductParamsSpecification productParams) 
             : base(x => 

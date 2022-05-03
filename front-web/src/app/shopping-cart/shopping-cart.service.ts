@@ -23,7 +23,11 @@ export class ShoppingCartService {
 
   setShippingPrice(deliveryMethod: IDeliveryMethod) {
     this.shipping = deliveryMethod.price;
+    const shoppingCart = this.getCurrentShoppingCartValue();
+    shoppingCart.deliveryMethodId = deliveryMethod.id;
+    shoppingCart.shippingPrice = deliveryMethod.price;
     this.calcualteTotal();
+    this.setShoppingCart(shoppingCart);
   }
 
   getShoppingCart(id: string) {
@@ -31,6 +35,7 @@ export class ShoppingCartService {
       .pipe(
         map((shoppingCart: IShoppingCart) => {
           this.shoppingCartSource.next(shoppingCart);
+          this.shipping = shoppingCart.shippingPrice;
           this.calcualteTotal();
         })
       )
@@ -135,6 +140,15 @@ export class ShoppingCartService {
     const subtotal = shopingCart.items.reduce((a, b) => (b.price * b.quantity) + a, 0);
     const total = subtotal + shipping;
     this.shoppingCartTotalSource.next({shipping, total, subtotal});
+  }
+
+  createPaymentIntent() {
+    return this.http.post(`${API_CONFIG.baseUrl}/payments/${this.getCurrentShoppingCartValue().id}`, {})
+      .pipe(
+        map((shoppingCart: IShoppingCart) => {
+          this.shoppingCartSource.next(shoppingCart);
+        })
+      )
   }
   
   private mapProductItemToShoppingCartItem(item: IProduct, quantity: number): IShoppingCartItem {

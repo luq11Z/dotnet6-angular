@@ -2,7 +2,7 @@
 
 namespace SKINET.Data.Specifications
 {
-    public class ProductWithFiltersForCountSpecification : BaseSpeficiation<Product>
+    public class ProductWithFiltersForCountSpecification : BaseSpecification<Product>
     {
         public ProductWithFiltersForCountSpecification(ProductParamsSpecification productParams) :
             base(x =>

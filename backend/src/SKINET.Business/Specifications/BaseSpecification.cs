@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 namespace SKINET.Data.Specifications
 {
     /* This class allow us to construct/specify criterias and aggregate data. */
-    public class BaseSpeficiation<TEntity> : ISpecification<TEntity>
+    public class BaseSpecification<TEntity> : ISpecification<TEntity>
     {
         public Expression<Func<TEntity, bool>> Criteria { get; }
 
@@ -20,11 +20,11 @@ namespace SKINET.Data.Specifications
 
         public bool isPagingEnabled { get; private set; }
 
-        public BaseSpeficiation()
+        public BaseSpecification()
         {
         }
 
-        public BaseSpeficiation(Expression<Func<TEntity, bool>> criteria)
+        public BaseSpecification(Expression<Func<TEntity, bool>> criteria)
         {
             Criteria = criteria;
         }

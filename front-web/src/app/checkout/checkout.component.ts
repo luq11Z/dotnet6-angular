@@ -21,6 +21,7 @@ export class CheckoutComponent implements OnInit {
   ngOnInit(): void {
     this.createCheckoutForm();
     this.getAddressFormValues();
+    this.getDeliveryMethodValue();
     this.shoppingCartTotals$ = this.shoppingCartService.shoppingCartTotal$;
   }
 
@@ -54,6 +55,14 @@ export class CheckoutComponent implements OnInit {
       },
       error: (error) => console.log(error)
     });
+  }
+
+  getDeliveryMethodValue() {
+    const shoppingCart = this.shoppingCartService.getCurrentShoppingCartValue();
+
+    if (shoppingCart.deliveryMethodId !== null) {
+      this.checkoutForm.get('deliveryForm').get('deliveryMethod').patchValue(shoppingCart.deliveryMethodId.toString());
+    }
   }
 
 }

@@ -5,6 +5,7 @@ import { map, of, ReplaySubject } from 'rxjs';
 import { API_CONFIG } from 'src/config/api.config';
 import { IAddress } from '../shared/models/address';
 import { IUser } from '../shared/models/user';
+import { ShoppingCartService } from '../shopping-cart/shopping-cart.service';
 
 @Injectable({
   providedIn: 'root'

@@ -1,7 +1,9 @@
 ﻿using SKINET.Business.Interfaces;
+using SKINET.Business.Interfaces.IServices;
 using SKINET.Business.Interfaces.Repositories;
 using SKINET.Business.Models;
 using SKINET.Business.Models.OrderAggregate;
+using SKINET.Business.Specifications;
 using SKINET.Data.Specifications;
 
 namespace SKINET.Business.Services
@@ -10,11 +12,13 @@ namespace SKINET.Business.Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IShoppingCartRepository _shoppingCartRepository;
+        private readonly IPaymentService _paymentService;
 
-        public OrderService(IUnitOfWork unitOfWork, IShoppingCartRepository shoppingCartRepository)
+        public OrderService(IUnitOfWork unitOfWork, IShoppingCartRepository shoppingCartRepository, IPaymentService paymentService)
         {
             _unitOfWork = unitOfWork;
             _shoppingCartRepository = shoppingCartRepository;
+            _paymentService = paymentService;
         }
 
         public async Task<Order> CreateOrderAsync(string buyerEmail, int deliveryMethodId, string cartId, Address shippingAddress)
@@ -34,7 +38,16 @@ namespace SKINET.Business.Services
 
             var subtotal = items.Sum(item => item.Price * item.Quantity);
 
-            var order = new Order(items, buyerEmail, shippingAddress, deliveryMethod, subtotal);
+            var spec = new OrderByPaymentIntentIdSpecification(shoppinhCart.PaymentIntentId);
+            var existingOrder = await _unitOfWork.Repository<Order>().GetWithSpec(spec);
+
+            if (existingOrder != null)
+            {
+                _unitOfWork.Repository<Order>().Delete(existingOrder);
+                await _paymentService.CreateOrUpdatePaymentIntent(shoppinhCart.PaymentIntentId);
+            }
+
+            var order = new Order(items, buyerEmail, shippingAddress, deliveryMethod, subtotal, shoppinhCart.PaymentIntentId);
             _unitOfWork.Repository<Order>().Add(order);
 
             var result = await _unitOfWork.Complete();
@@ -44,7 +57,7 @@ namespace SKINET.Business.Services
                 return null;
             }
 
-            await _shoppingCartRepository.DeleteShoppingCart(cartId);
+            //await _shoppingCartRepository.DeleteShoppingCart(cartId);
 
             return order;
         }
