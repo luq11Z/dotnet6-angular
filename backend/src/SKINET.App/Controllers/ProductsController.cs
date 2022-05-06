@@ -25,6 +25,7 @@ namespace SKINET.App.Controllers
             _mapper = mapper;
         }
 
+        [Cached(180)]
         [HttpGet]
         public async Task<ActionResult<Pagination<ProductDTO>>> GetProducts([FromQuery] ProductParamsSpecification productParams)
         {
@@ -38,6 +39,7 @@ namespace SKINET.App.Controllers
             return Ok(new Pagination<ProductDTO>(productParams.PageIndex, productParams.PageSize, totalItems, data));
         }
 
+        [Cached(180)]
         [HttpGet("{id}")]
         public async Task<ActionResult<ProductDTO>> GetProduct(int id)
         {
@@ -47,18 +49,20 @@ namespace SKINET.App.Controllers
 
             if (product != null)
             {
-                return _mapper.Map<ProductDTO>(product);
+                return Ok(_mapper.Map<ProductDTO>(product));
             }
 
             return NotFound(new ApiResponse(404));
         }
 
+        [Cached(180)]
         [HttpGet("brands")]
         public async Task<ActionResult<ProductBrand>> GetProductBrands()
         {
             return Ok(await _productBrandRepository.GetAll());
         }
 
+        [Cached(180)]
         [HttpGet("types")]
         public async Task<ActionResult<ProductType>> GetProductTypes()
         {

@@ -13,6 +13,8 @@ namespace SKINET.App.Configuration
     {
         public static IServiceCollection ResolveDependecies(this IServiceCollection services)
         {
+            services.AddSingleton<IResponseCacheService, ResponseCacheService>();
+
             services.AddScoped<StoreContext>();
 
             services.AddScoped(typeof(IRepository<>), (typeof(Repository<>)));
