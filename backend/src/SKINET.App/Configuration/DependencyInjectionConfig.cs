@@ -53,7 +53,6 @@ namespace SKINET.App.Configuration
                 option.AddPolicy("CorsPolicy", policy =>
                 {
                     policy.AllowAnyHeader()
-                    .AllowAnyOrigin()
                     .AllowAnyMethod()
                     .WithOrigins("https://localhost:4200");
                 });
