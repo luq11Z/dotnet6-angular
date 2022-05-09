@@ -40,7 +40,7 @@ namespace SKINET.App.Controllers
         {
             var specifications = new ProductsWithBrandsAndTypesSpecification(id);
 
-            var product = await _unitOfWork.Repository<Product>().GetAllWithSpec(specifications);
+            var product = await _unitOfWork.Repository<Product>().GetWithSpec(specifications);
 
             if (product != null)
             {
