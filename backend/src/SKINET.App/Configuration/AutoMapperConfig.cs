@@ -15,6 +15,8 @@ namespace SKINET.App.Configuration
                 .ForMember(d => d.CreatedAt, o => o.MapFrom(d => d.CreatedAt.ToLocalTime()))
                 .ForMember(d => d.PictureUrl, o => o.MapFrom<ProductUrlResolver>());
 
+            CreateMap<ProductCreateDto, Product>();
+
             CreateMap<Business.Models.Identity.Address, AddressDto>().ReverseMap();
             CreateMap<AddressDto, Business.Models.OrderAggregate.Address>();
             CreateMap<ShoppingCart, ShoppingCartDto>().ReverseMap();
