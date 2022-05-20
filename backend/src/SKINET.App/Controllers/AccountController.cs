@@ -31,7 +31,7 @@ namespace SKINET.App.Controllers
         {
             var user = await _userManager.FindByEmailFromClaimsPrinciple(User);
 
-            return new UserDto { Email = user.Email, DisplayName = user.DisplayName, Token = _tokenService.CreateToken(user) };
+            return new UserDto { Email = user.Email, DisplayName = user.DisplayName, Token = await _tokenService.CreateToken(user) };
         }
 
         [HttpGet("emailexists")]
@@ -66,7 +66,7 @@ namespace SKINET.App.Controllers
                 return Unauthorized(new ApiResponse(401));
             }
 
-            return new UserDto { Email = user.Email, DisplayName = user.DisplayName, Token = _tokenService.CreateToken(user) };
+            return new UserDto { Email = user.Email, DisplayName = user.DisplayName, Token = await _tokenService.CreateToken(user) };
         }
 
         [HttpPost("register")]
@@ -94,7 +94,14 @@ namespace SKINET.App.Controllers
                 return BadRequest(new ApiResponse(400));
             }
 
-            return new UserDto { DisplayName = user.DisplayName, Email = registerDto.Email, Token = _tokenService.CreateToken(user) };
+            var addRoleResult = await _userManager.AddToRoleAsync(user, "Member");
+
+            if (!addRoleResult.Succeeded)
+            {
+                return BadRequest(new ApiResponse(400, "Failed to add to role"));
+            }
+
+            return new UserDto { DisplayName = user.DisplayName, Email = registerDto.Email, Token = await _tokenService.CreateToken(user) };
         }
 
         [HttpPut("address")]

@@ -2,6 +2,7 @@
 using SKINET.Business.Models;
 using SKINET.Business.Models.OrderAggregate;
 using SKINET.Data.Context;
+using SKINET.Data.SeedData.Models;
 using System.Text.Json;
 
 namespace SKINET.Data.SeedData
@@ -44,11 +45,23 @@ namespace SKINET.Data.SeedData
                 {
                     var productsData = File.ReadAllText("../SKINET.DATA/SeedData/products.json");
 
-                    var products = JsonSerializer.Deserialize<List<Product>>(productsData);
+                    var products = JsonSerializer.Deserialize<List<ProductSeedModel>>(productsData);
 
                     foreach (var item in products)
                     {
-                        context.Products.Add(item);
+                        var pictureFileName = item.PictureUrl.Substring(16);
+                        var product = new Product
+                        {
+                            Name = item.Name,
+                            Description = item.Description,
+                            Price = item.Price,
+                            ProductBrandId = item.ProductBrandId,
+                            ProductTypeId = item.ProductTypeId,
+                        };
+
+                        product.AddPicutre(item.PictureUrl, pictureFileName);
+                        
+                        context.Products.Add(product);
                     }
 
                     await context.SaveChangesAsync();

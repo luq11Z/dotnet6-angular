@@ -12,8 +12,8 @@ using SKINET.Data.Context;
 namespace SKINET.Data.Migrations
 {
     [DbContext(typeof(StoreContext))]
-    [Migration("20220420153822_KeyAdded")]
-    partial class KeyAdded
+    [Migration("20220520224614_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -107,6 +107,33 @@ namespace SKINET.Data.Migrations
                     b.ToTable("OrderItems", (string)null);
                 });
 
+            modelBuilder.Entity("SKINET.Business.Models.Picture", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("FileName")
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<bool>("IsMain")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("PictureUrl")
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("Picture");
+                });
+
             modelBuilder.Entity("SKINET.Business.Models.Product", b =>
                 {
                     b.Property<int>("Id")
@@ -127,10 +154,6 @@ namespace SKINET.Data.Migrations
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("varchar(100)");
-
-                    b.Property<string>("PictureUrl")
-                        .IsRequired()
-                        .HasColumnType("varchar(255)");
 
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
@@ -228,7 +251,8 @@ namespace SKINET.Data.Migrations
                 {
                     b.HasOne("SKINET.Business.Models.OrderAggregate.Order", null)
                         .WithMany("OrderItems")
-                        .HasForeignKey("OrderId");
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.OwnsOne("SKINET.Business.Models.OrderAggregate.ProductItemOrdered", "ItemOrdered", b1 =>
                         {
@@ -255,16 +279,29 @@ namespace SKINET.Data.Migrations
                     b.Navigation("ItemOrdered");
                 });
 
+            modelBuilder.Entity("SKINET.Business.Models.Picture", b =>
+                {
+                    b.HasOne("SKINET.Business.Models.Product", "Product")
+                        .WithMany("Pictures")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+                });
+
             modelBuilder.Entity("SKINET.Business.Models.Product", b =>
                 {
                     b.HasOne("SKINET.Business.Models.ProductBrand", "ProductBrand")
                         .WithMany()
                         .HasForeignKey("ProductBrandId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("SKINET.Business.Models.ProductType", "ProductType")
                         .WithMany()
                         .HasForeignKey("ProductTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("ProductBrand");
@@ -275,6 +312,11 @@ namespace SKINET.Data.Migrations
             modelBuilder.Entity("SKINET.Business.Models.OrderAggregate.Order", b =>
                 {
                     b.Navigation("OrderItems");
+                });
+
+            modelBuilder.Entity("SKINET.Business.Models.Product", b =>
+                {
+                    b.Navigation("Pictures");
                 });
 #pragma warning restore 612, 618
         }

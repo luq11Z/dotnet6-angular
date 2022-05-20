@@ -16,12 +16,16 @@ namespace SKINET.App.Configuration
         /* This method will get the url from app.settings and set the full url address to the picture (product). */
         public string Resolve(Product source, ProductDTO destination, string destMember, ResolutionContext context)
         {
-            if (!string.IsNullOrEmpty(source.PictureUrl))
+            var photo = source.Pictures.FirstOrDefault(p => p.IsMain);
+
+            if (photo != null)
             {
-                return _configuration["ApiUrl"] + source.PictureUrl;
+                return _configuration["ApiUrl"] + photo.PictureUrl;
             }
 
-            return null;
+
+
+            return _configuration["ApiUrl"] + "images/products/placeholder.png";
         }
     }
 }

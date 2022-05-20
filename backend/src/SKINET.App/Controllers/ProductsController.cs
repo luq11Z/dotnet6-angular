@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SKINET.App.Dtos;
 using SKINET.App.Errors;
@@ -18,6 +19,30 @@ namespace SKINET.App.Controllers
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult<Product>> CreateProduct([FromBody] ProductCreateDto productToCreate)
+        {
+            if (productToCreate.Price == 0)
+            {
+                return BadRequest(new ApiResponse(400, "Price must be greater than 0"));
+            }
+
+            var product = _mapper.Map<ProductCreateDto, Product>(productToCreate);
+
+            _unitOfWork.Repository<Product>().Add(product);
+
+            var result = await _unitOfWork.Complete();
+
+            if (result <= 0)
+            {
+                return BadRequest(new ApiResponse(400, "Problem creating product"));
+            }
+
+            //this should be a created http verb
+            return Ok(product);
         }
 
         //[Cached(180)]
@@ -64,30 +89,8 @@ namespace SKINET.App.Controllers
             return Ok(await _unitOfWork.Repository<ProductType>().GetAll());
         }
 
-        [HttpPost]
-        public async Task<ActionResult<Product>> CreateProduct([FromBody] ProductCreateDto productToCreate)
-        {
-            if (productToCreate.Price == 0)
-            {
-                return BadRequest(new ApiResponse(400, "Price must be greater than 0"));
-            }
-
-            var product = _mapper.Map<ProductCreateDto, Product>(productToCreate);
-            product.PictureUrl = "images/products/placeholder.png";
-
-            _unitOfWork.Repository<Product>().Add(product);
-
-            var result = await _unitOfWork.Complete();
-
-            if (result <= 0) 
-            {
-                return BadRequest(new ApiResponse(400, "Problem creating product"));
-            }
-
-            return Ok(product);
-        }
-
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<Product>> UpdateProduct(int id, ProductCreateDto productToUpdate)
         {
             var product = await _unitOfWork.Repository<Product>().GetById(id);
@@ -112,6 +115,7 @@ namespace SKINET.App.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult> DeleteProduct(int id)
         {
             var product = await _unitOfWork.Repository<Product>().GetById(id);

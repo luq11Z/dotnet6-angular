@@ -14,6 +14,8 @@ export class AccountService {
 
   private currentUserSource = new ReplaySubject<IUser>(1);
   currentUser$ = this.currentUserSource.asObservable();
+  private isAdminSource = new ReplaySubject<boolean>(1);
+  isAdmin$ = this.isAdminSource.asObservable();
 
   constructor(private http: HttpClient, private router: Router) { }
 
@@ -28,9 +30,10 @@ export class AccountService {
 
     return this.http.get(`${API_CONFIG.baseUrl}/account`, {headers}).pipe(
       map((user: IUser) => {
-        if(user) {
+        if (user) {
           localStorage.setItem('token', user.token);
           this.currentUserSource.next(user);
+          this.isAdminSource.next(this.isAdmin(user.token));
         }
       })
     );
@@ -39,9 +42,10 @@ export class AccountService {
   login(values: any) {
     return this.http.post(`${API_CONFIG.baseUrl}/account/login`, values).pipe(
       map((user: IUser) => {
-        if(user) {
+        if (user) {
           localStorage.setItem('token', user.token);
           this.currentUserSource.next(user);
+          this.isAdminSource.next(this.isAdmin(user.token));
         }
       })
     );
@@ -56,7 +60,7 @@ export class AccountService {
   register(values: any) {
     return this.http.post(`${API_CONFIG.baseUrl}/account/register`, values).pipe(
       map((user: IUser) => {
-        if(user) {
+        if (user) {
           localStorage.setItem('token', user.token);
           this.currentUserSource.next(user);
         }
@@ -74,6 +78,17 @@ export class AccountService {
 
   updateUserAddress(address: IAddress) {
     return this.http.put<IAddress>(`${API_CONFIG.baseUrl}/account/address`, address);
+  }
+
+  isAdmin(token: string) : boolean {
+    if (token) {
+      const decodedToken = JSON.parse(atob(token.split('.')[1]));
+      if (decodedToken.role.indexOf('Admin') > -1) {
+        return true
+      }
+    }
+
+    return false;
   }
 
 }

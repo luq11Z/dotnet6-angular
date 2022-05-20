@@ -29,7 +29,7 @@ namespace SKINET.Business.Services
             foreach (var item in shoppinhCart.Items)
             {
                 var productItem = await _unitOfWork.Repository<Product>().GetById(item.Id);
-                var itemOrdered = new ProductItemOrdered(productItem.Id, productItem.Name, productItem.PictureUrl);
+                var itemOrdered = new ProductItemOrdered(productItem.Id, productItem.Name, productItem.Pictures.FirstOrDefault(p => p.IsMain)?.PictureUrl);
                 var orderItem = new OrderItem(itemOrdered, productItem.Price, item.Quantity);
                 items.Add(orderItem);
             }

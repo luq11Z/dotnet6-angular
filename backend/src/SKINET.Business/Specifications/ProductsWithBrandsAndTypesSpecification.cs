@@ -37,6 +37,7 @@ namespace SKINET.Data.Specifications
         {
             AddInclude(x => x.ProductType);
             AddInclude(x => x.ProductBrand);
+            AddInclude(x => x.Pictures);
         }
     }
 }

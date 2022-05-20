@@ -86,10 +86,7 @@ export class EditProductComponent implements OnInit {
           this.toastr.success("Product created successfully");
           this.router.navigate(['admin']);
         },
-        error: (error) => {
-          console.log(error);
-          this.toastr.error("Something went wrong");
-        }
+        error: () => this.toastr.error("Something went wrong")
       })
     }
   }

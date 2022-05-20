@@ -12,7 +12,7 @@ namespace SKINET.App.Controllers
     {
         private readonly IPaymentService _paymentService;
         private readonly ILogger<PaymentsController> _logger;
-        private const string WhSecret = "whsec_2d00e4e20b61771c84755169b400c6ce32b92d143f1cd835aa1bebba7dc246cf";
+        private const string WhSecret = "";
 
         public PaymentsController(IPaymentService paymentService, ILogger<PaymentsController> logger)
         {

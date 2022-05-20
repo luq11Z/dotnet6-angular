@@ -14,12 +14,14 @@ export class NavBarComponent implements OnInit {
 
   shoppingCart$: Observable<IShoppingCart>;
   currentUser$: Observable<IUser>;
+  isAdmin$: Observable<boolean>
 
   constructor(private shoppingCartService: ShoppingCartService, private accountService: AccountService) { }
 
   ngOnInit(): void {
     this.shoppingCart$ = this.shoppingCartService.shoppingCart$;
     this.currentUser$ = this.accountService.currentUser$;
+    this.isAdmin$ = this.accountService.isAdmin$;
   }
 
   logout() {
