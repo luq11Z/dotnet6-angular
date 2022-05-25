@@ -27,6 +27,7 @@ namespace SKINET.App.Configuration
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<IPaymentService, PaymentService>();
+            services.AddScoped<IPictureService, PictureService>();
 
             services.AddAutoMapper(typeof(AutoMapperConfig));
 

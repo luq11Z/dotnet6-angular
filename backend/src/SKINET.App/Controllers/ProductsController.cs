@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using SKINET.App.Dtos;
 using SKINET.App.Errors;
 using SKINET.App.Extensions;
+using SKINET.Business.Interfaces.IServices;
 using SKINET.Business.Interfaces.Repositories;
 using SKINET.Business.Models;
 using SKINET.Data.Specifications;
@@ -14,11 +15,13 @@ namespace SKINET.App.Controllers
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
+        private readonly IPictureService _pictureService;
 
-        public ProductsController(IUnitOfWork unitOfWork,  IMapper mapper)
+        public ProductsController(IUnitOfWork unitOfWork, IMapper mapper, IPictureService pictureService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _pictureService = pictureService;   
         }
 
         [HttpPost]
@@ -43,6 +46,39 @@ namespace SKINET.App.Controllers
 
             //this should be a created http verb
             return Ok(product);
+        }
+
+        [HttpPut("{id}/picture")]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult<ProductDTO>> AddProductPicture(int id, [FromForm] ProductPictureDto pictureDto)
+        {
+            var spec = new ProductsWithBrandsAndTypesSpecification(id);
+            var product = await _unitOfWork.Repository<Product>().GetWithSpec(spec);
+
+            if (pictureDto.Picture.Length > 0)
+            {
+                var picture = await _pictureService.SaveToDiskAsync(pictureDto.Picture);
+
+                if (picture != null)
+                {
+                    product.AddPicutre(picture.PictureUrl, picture.FileName);
+
+                    _unitOfWork.Repository<Product>().Update(product);
+
+                    var result = await _unitOfWork.Complete();
+
+                    if (result <= 0)
+                    {
+                        return BadRequest(new ApiResponse(400, "Problem adding product picture"));
+                    }
+                }
+                else
+                {
+                    return BadRequest(new ApiResponse(400, "Problem saving picture"));
+                }
+            }
+
+            return _mapper.Map<Product, ProductDTO>(product);
         }
 
         //[Cached(180)]
@@ -114,6 +150,32 @@ namespace SKINET.App.Controllers
             return NotFound(new ApiResponse(404, "Product not found"));
         }
 
+        [HttpPut("{id}/picture/{pictureId}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult<ProductDTO>> SetProductMainPicture(int id, int pictureId)
+        {
+            var spec = new ProductsWithBrandsAndTypesSpecification(id);
+            var product = await _unitOfWork.Repository<Product>().GetWithSpec(spec);
+
+            if (product.Pictures.All(x => x.Id != pictureId))
+            {
+                return NotFound(new ApiResponse(404, "Product picture not found"));
+            }
+
+            product.SetMainPicture(pictureId);
+
+            _unitOfWork.Repository<Product>().Update(product);
+
+            var result = await _unitOfWork.Complete();
+
+            if (result <= 0)
+            {
+                return BadRequest(new ApiResponse(400, "Problem adding product picutre"));
+            }
+
+            return _mapper.Map<Product, ProductDTO>(product);
+        }
+
         [HttpDelete("{id}")]
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult> DeleteProduct(int id)
@@ -135,6 +197,43 @@ namespace SKINET.App.Controllers
             }
 
             return NotFound(new ApiResponse(404, "Product not found"));
+        }
+
+        [HttpDelete("{id}/picture/{pictureId}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult> DeleteProductPicture(int id, int pictureId)
+        {
+            var spec = new ProductsWithBrandsAndTypesSpecification(id);
+            var product = await _unitOfWork.Repository<Product>().GetWithSpec(spec);
+
+            var picture = product.Pictures.SingleOrDefault(x => x.Id == pictureId);
+
+            if (picture != null)
+            {
+                if (picture.IsMain)
+                {
+                    return BadRequest(new ApiResponse(400, "You cannot delete the main picture"));
+                }
+
+                _pictureService.DeleteFromDisk(picture);
+            }
+            else
+            {
+                return BadRequest(new ApiResponse(400, "Picture does not exist"));
+            }
+
+            product.RemovePicture(pictureId);
+
+            _unitOfWork.Repository<Product>().Update(product);
+
+            var result = await _unitOfWork.Complete();
+
+            if (result <= 0)
+            {
+                return BadRequest(new ApiResponse(400, "Problem deleting product picuture"));
+            }
+
+            return NoContent();
         }
 
     }

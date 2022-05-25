@@ -29,5 +29,33 @@
 
             _pictures.Add(picture);
         }
+
+        public void RemovePicture(int id)
+        {
+            var picture = _pictures.Find(p => p.Id == id);
+            _pictures.Remove(picture);
+        }
+
+        public void SetMainPicture(int id)
+        {
+            var currentMain = _pictures.SingleOrDefault(item => item.IsMain);
+
+            foreach (var item in _pictures.Where(item => item.IsMain))
+            {
+                item.IsMain = false;
+            }
+
+            var picture = _pictures.Find(p => p.Id == id);
+            
+            if (picture != null)
+            {
+                picture.IsMain = true;
+
+                if (currentMain != null)
+                {
+                    currentMain.IsMain = false;
+                }
+            }
+        }
     }
 }
