@@ -23,8 +23,6 @@ namespace SKINET.App.Configuration
                 return _configuration["ApiUrl"] + photo.PictureUrl;
             }
 
-
-
             return _configuration["ApiUrl"] + "images/products/placeholder.png";
         }
     }

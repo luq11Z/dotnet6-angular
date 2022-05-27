@@ -6,7 +6,15 @@ export interface IProduct {
     pictureUrl: string;
     productType: string;
     productBrand: string;
+    pictures: IPicture[];
     createdAt: string;
+}
+
+export interface IPicture {
+    id: number;
+    pictureUrl: string;
+    fileName: string;
+    isMain: boolean;
 }
 
 export interface IProductToCreate {

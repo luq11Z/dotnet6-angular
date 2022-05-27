@@ -15,7 +15,8 @@ import { AdminService } from '../admin.service';
 })
 export class EditProductComponent implements OnInit {
 
-  product: ProductFormValues;
+  product: IProduct;
+  productFormValues: ProductFormValues;
   brands: IBrand[];
   types: IType[];
 
@@ -24,7 +25,7 @@ export class EditProductComponent implements OnInit {
               private route: ActivatedRoute, 
               private router: Router,
               private toastr: ToastrService) {
-    this.product = new ProductFormValues();
+    this.productFormValues = new ProductFormValues();
   }
 
   ngOnInit(): void {
@@ -42,6 +43,7 @@ export class EditProductComponent implements OnInit {
     });
 
     if (this.route.snapshot.url[0].path === 'edit-product') {
+      console.log(this.route.snapshot.url[0]);
       this.loadProduct();
     }
   }
@@ -51,7 +53,9 @@ export class EditProductComponent implements OnInit {
       next: (response: IProduct) => {
         const productBrandId = this.brands && this.brands.find(x => x.name === response.productBrand).id;
         const productTypeId = this.types && this.types.find(x => x.name === response.productType).id;
-        this.product = {...response, productBrandId, productTypeId};
+        this.product = response;
+        this.productFormValues = {...response, productBrandId, productTypeId};
+        console.log(this.product);
       }, 
       error: (error) => console.log(error)
     })
